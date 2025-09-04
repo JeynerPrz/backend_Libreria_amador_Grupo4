@@ -5,15 +5,16 @@ import express from 'express';
 
 
 //Importar las rutas
-import rutasCategorias from './src/routes/categorias.routes.js';
+
 import rutasClientes from  './src/routes/clientes.routes.js';
 import rutasCompras from  './src/routes/compras.routes.js';
 import rutasDetaleVentas from  './src/routes/detalle_ventas.routes.js';
 import rutasDetalleCompras from  './src/routes/detalle_compras.routes.js';
 import rutasEmpleados from  './src/routes/empleados.routes.js';
 import rutasProductos from  './src/routes/productos.routes.js';
-
+import rutasUsuarios from './src/routes/usuarios.routes.js';
 import rutasVentas from  './src/routes/ventas.routes.js';
+
 
 
 
@@ -35,15 +36,18 @@ app.use(express.json({ limit: '10mb' })); //10 MB
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Rutas:
-app.use('/api', rutasCategorias);
+
+
+
 app.use('/api', rutasClientes);
 app.use('/api', rutasCompras);
 app.use('/api', rutasDetaleVentas);
 app.use('/api', rutasDetalleCompras);
 app.use('/api', rutasEmpleados);
 app.use('/api', rutasProductos);
-
+app.use('/api', rutasUsuarios);
 app.use('/api', rutasVentas);
+
 
 
 // Manejo de rutas no encontradas 
