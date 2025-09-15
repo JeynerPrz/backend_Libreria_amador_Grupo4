@@ -12,15 +12,14 @@ export const obtenerProductos = async (req, res) => {
   }
 };
 
-
 export const obtenerProducto = async (req, res) => {
   try {
-    const id_producto = req.params.id_producto;
-    const [result] = await pool.query("SELECT * FROM Productos WHERE id_producto= ?",[id_producto]
+    const ID_Producto = req.params.ID_Producto;
+    const [result] = await pool.query("SELECT * FROM Productos WHERE ID_Producto= ?",[ID_Producto]
     );
     if (result.length <= 0) {
       return res.status(404).json({
-        mensaje: `Error al leer los datos. ID ${id_producto} no encontrado.`,
+        mensaje: `Error al leer los datos. ID ${ID_Producto} no encontrado.`,
       });
     }
     res.json(result[0]);

@@ -1,8 +1,6 @@
-
 //Importar las dependencias necesartas 
 import express from 'express'; 
- import cors from 'cors';
-
+import cors from 'cors';
 
 //Importar las rutas
 
@@ -14,8 +12,6 @@ import rutasEmpleados from  './src/routes/empleados.routes.js';
 import rutasProductos from  './src/routes/productos.routes.js';
 import rutasUsuarios from './src/routes/usuarios.routes.js';
 import rutasVentas from  './src/routes/ventas.routes.js';
-
-
 
 
 // Crear la aplicación de Express
@@ -37,8 +33,6 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Rutas:
 
-
-
 app.use('/api', rutasClientes);
 app.use('/api', rutasCompras);
 app.use('/api', rutasDetaleVentas);
@@ -49,16 +43,12 @@ app.use('/api', rutasUsuarios);
 app.use('/api', rutasVentas);
 
 
-
 // Manejo de rutas no encontradas 
-
 app.use((req, res, next) => {
-    
-res.status(404).json({
-message: "La ruta que ha especificado no se encuentra registrada."
+  res.status(404).json({
+    message: "La ruta que ha especificado no se encuentra registrada.",
+  });
 });
-});
-
 
 // Exportar la aplicación export default app;
 export default app;

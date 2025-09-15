@@ -1,6 +1,6 @@
-CREATE DATABASE Libreria;
+CREATE DATABASE Libreria_Amador;
 
-USE Libreria;
+USE Libreria_Amador;
 
 CREATE TABLE Clientes (
     ID_Cliente INT AUTO_INCREMENT PRIMARY KEY,
