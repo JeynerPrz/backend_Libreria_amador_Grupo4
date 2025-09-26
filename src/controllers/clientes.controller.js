@@ -1,7 +1,5 @@
 import { pool } from '../../db_connection.js';
 
-
-
 // Obtener todas los Clientes
 export const obtenerClientes = async (req, res) => {
     try {

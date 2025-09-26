@@ -1,72 +1,112 @@
 CREATE DATABASE Libreria_Amador;
-
 USE Libreria_Amador;
 
+-- Tabla Clientes
 CREATE TABLE Clientes (
     ID_Cliente INT AUTO_INCREMENT PRIMARY KEY,
-    Primer_Nombre VARCHAR(10) NOT NULL,
-    Segundo_Nombre VARCHAR(10),
-    Primer_Apellido VARCHAR(10) NOT NULL,
-    Segundo_Apellido VARCHAR(10),
+    Primer_Nombre VARCHAR(20) NOT NULL,
+    Segundo_Nombre VARCHAR(20),
+    Primer_Apellido VARCHAR(20) NOT NULL,
+    Segundo_Apellido VARCHAR(20),
     Cedula VARCHAR(18),
-    Contacto VARCHAR(20)
+    Contacto VARCHAR(20),
+    Direccion VARCHAR(150)
 );
 
-
+-- Tabla Proveedores
 CREATE TABLE Proveedores (
     ID_Proveedor INT AUTO_INCREMENT PRIMARY KEY,
-    Primer_Nombre VARCHAR(10) NOT NULL,
-    Segundo_Nombre VARCHAR(10),
-    Primer_Apellido VARCHAR(10) NOT NULL,
-    Segundo_Apellido VARCHAR(10),
+    Primer_Nombre VARCHAR(20) NOT NULL,
+    Segundo_Nombre VARCHAR(20),
+    Primer_Apellido VARCHAR(20) NOT NULL,
+    Segundo_Apellido VARCHAR(20),
     Contacto VARCHAR(8),
     Correo VARCHAR(30)
 );
 
+-- Tabla Empleados
+CREATE TABLE Empleados (
+    ID_Empleado INT AUTO_INCREMENT PRIMARY KEY,
+    Primer_Nombre VARCHAR(20),
+    Segundo_Nombre VARCHAR(20),
+    Primer_Apellido VARCHAR(20),
+    Segundo_Apellido VARCHAR(20),
+    Celular VARCHAR(8),
+    Cargo VARCHAR(20),
+    Fecha_Contratacion DATE
+);
+
+-- Tabla Usuarios
+CREATE TABLE Usuarios (
+    ID_Usuario INT AUTO_INCREMENT PRIMARY KEY,
+    Usuario VARCHAR(20),
+    Contrasena VARCHAR(20)
+);
+
+-- Tabla Categorias
+CREATE TABLE Categorias (
+    ID_Categoria INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre_Categoria VARCHAR(20),
+    Descripcion_Categoria VARCHAR(100)
+);
+
+-- Tabla Productos
 CREATE TABLE Productos (
     ID_Producto INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(25),
-    Descripcion VARCHAR(55),
-    Cantidad FLOAT,
+    Descripcion VARCHAR(100),
+    ID_Categoria INT,
     Precio_Comp FLOAT,
-    Precio_Vent FLOAT
+    Precio_Vent FLOAT,
+    Cantidad INT,
+    Imagen LONGTEXT,
+    FOREIGN KEY (ID_Categoria) REFERENCES Categorias (ID_Categoria)
 );
 
-
-
+-- Tabla Ventas
 CREATE TABLE Ventas (
     ID_Venta INT AUTO_INCREMENT PRIMARY KEY,
-    Fecha_Venta DATE,
+    Fecha_Venta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ID_Cliente INT,
-    FOREIGN KEY (ID_Cliente) REFERENCES Clientes (ID_Cliente)
+    ID_Empleado INT,
+    Total_Venta FLOAT,
+    FOREIGN KEY (ID_Cliente) REFERENCES Clientes (ID_Cliente),
+    FOREIGN KEY (ID_Empleado) REFERENCES Empleados (ID_Empleado)
 );
 
+-- Tabla Compras
 CREATE TABLE Compras (
     ID_Compra INT AUTO_INCREMENT PRIMARY KEY,
     Fecha_Compra DATE,
     ID_Proveedor INT,
-    FOREIGN KEY (ID_Proveedor) REFERENCES Proveedores (ID_Proveedor)
+    ID_Empleado INT,
+    Total_Compra FLOAT,
+    FOREIGN KEY (ID_Proveedor) REFERENCES Proveedores (ID_Proveedor),
+    FOREIGN KEY (ID_Empleado) REFERENCES Empleados (ID_Empleado)
 );
 
+-- Tabla Detalle Ventas
 CREATE TABLE Detalle_Ventas (
     ID_Detalle_Ven INT AUTO_INCREMENT PRIMARY KEY,
     ID_Venta INT,
     ID_Producto INT,
-    Cantidad_Ven FLOAT,
+    Cantidad_Ven INT,
     Precio_Ven FLOAT,
-    FOREIGN KEY (ID_Venta) REFERENCES Ventas (ID_Venta),
+    FOREIGN KEY (ID_Venta) REFERENCES Ventas (ID_Venta) ON DELETE CASCADE,
     FOREIGN KEY (ID_Producto) REFERENCES Productos (ID_Producto)
 );
 
+-- Tabla Detalle Compras
 CREATE TABLE Detalle_Compras (
     ID_Detalle_Com INT AUTO_INCREMENT PRIMARY KEY,
     ID_Compra INT,
     ID_Producto INT,
-    Cantidad_Com FLOAT,
+    Cantidad_Com INT,
     Precio_Com FLOAT,
-    FOREIGN KEY (ID_Producto) REFERENCES Productos (ID_Producto),
-    FOREIGN KEY (ID_Compra) REFERENCES Compras (ID_Compra)
+    FOREIGN KEY (ID_Compra) REFERENCES Compras (ID_Compra) ON DELETE CASCADE,
+    FOREIGN KEY (ID_Producto) REFERENCES Productos (ID_Producto)
 );
+
 
 -- Inserciones para Clientes
 INSERT INTO Clientes (Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Cedula, Contacto) VALUES
