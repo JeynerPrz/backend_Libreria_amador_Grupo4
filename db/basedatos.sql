@@ -43,12 +43,7 @@ CREATE TABLE Usuarios (
     Contrasena VARCHAR(20)
 );
 
--- Tabla Categorias
-CREATE TABLE Categorias (
-    ID_Categoria INT AUTO_INCREMENT PRIMARY KEY,
-    Nombre_Categoria VARCHAR(20),
-    Descripcion_Categoria VARCHAR(100)
-);
+
 
 -- Tabla Productos
 CREATE TABLE Productos (
