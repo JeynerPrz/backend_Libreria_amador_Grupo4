@@ -1,6 +1,6 @@
 import { pool } from "../../db_connection.js";
 
-//  Obtener todas las compras
+// Obtener todas las compras
 export const obtenerCompras = async (req, res) => {
   try {
     const [result] = await pool.query("SELECT * FROM Compras");
@@ -13,7 +13,7 @@ export const obtenerCompras = async (req, res) => {
   }
 };
 
-//  Obtener una compra por ID
+// Obtener una compra por ID
 export const obtenerCompra = async (req, res) => {
   try {
     const id_compra = req.params.id_compra;
@@ -37,7 +37,7 @@ export const obtenerCompra = async (req, res) => {
   }
 };
 
-//  Registrar una nueva compra
+// Registrar una nueva compra
 export const registrarCompra = async (req, res) => {
   try {
     const { ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra } = req.body;
@@ -59,7 +59,7 @@ export const registrarCompra = async (req, res) => {
   }
 };
 
-//  Eliminar una compra por ID
+// Eliminar una compra por ID
 export const eliminarCompra = async (req, res) => {
   try {
     const id_compra = req.params.id_compra;
@@ -84,3 +84,32 @@ export const eliminarCompra = async (req, res) => {
     });
   }
 };
+
+// Actualizar una compra por ID (PATCH)
+export const actualizarCompra = async (req, res) => {
+  try {
+    const { id_compra } = req.params;
+    const datos = req.body;
+
+    const [result] = await pool.query(
+      "UPDATE Compras SET ? WHERE ID_Compra = ?",
+      [datos, id_compra]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje: `Compra con ID ${id_compra} no encontrada.`,
+      });
+    }
+
+    res.status(200).json({
+      mensaje: `Compra con ID ${id_compra} actualizada correctamente.`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: "Ha ocurrido un error al actualizar la compra.",
+      error: error,
+    });
+  }
+};
+  
