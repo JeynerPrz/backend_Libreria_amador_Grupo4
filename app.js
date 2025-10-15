@@ -11,7 +11,7 @@ import rutasEmpleados from "./src/routes/empleados.routes.js";
 import rutasProductos from "./src/routes/productos.routes.js";
 import rutasUsuarios from "./src/routes/usuarios.routes.js";
 import rutasVentas from "./src/routes/ventas.routes.js";
-
+import rutasProveedores from "./src/routes/proveedores.routes.js"
 
 
 
@@ -39,7 +39,7 @@ app.use('/api', rutasEmpleados);
 app.use('/api', rutasProductos);
 app.use('/api', rutasUsuarios);
 app.use('/api', rutasVentas);
-
+app.use('/api', rutasProveedores);
 
  
 
