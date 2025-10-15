@@ -36,12 +36,6 @@ CREATE TABLE Empleados (
     Fecha_Contratacion DATE
 );
 
--- Tabla Usuarios
-CREATE TABLE Usuarios (
-    ID_Usuario INT AUTO_INCREMENT PRIMARY KEY,
-    Usuario VARCHAR(20),
-    Contrasena VARCHAR(20)
-);
 
 
 
