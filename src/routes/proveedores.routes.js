@@ -1,10 +1,12 @@
 import { Router } from "express";
 import {
+
   obtenerProveedores,
   obtenerProveedor,
   registrarProveedor,
   eliminarProveedor,
   actualizarProveedor, 
+  
 } from "../controllers/proveedores.controller.js";
 
 const router = Router();
