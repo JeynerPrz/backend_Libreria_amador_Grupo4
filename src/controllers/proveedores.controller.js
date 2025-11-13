@@ -24,10 +24,10 @@ export const obtenerProveedor = async (req, res) => {
   }
 };
 
-// === CREAR ===
+// === CREAR (SIN Dirección) ===
 export const registrarProveedor = async (req, res) => {
   try {
-    const { Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo, Direccion } = req.body;
+    const { Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo } = req.body;
 
     if (!Primer_Nombre || !Primer_Apellido || !Contacto || !Correo) {
       return res.status(400).json({ mensaje: "Faltan campos obligatorios" });
@@ -35,19 +35,19 @@ export const registrarProveedor = async (req, res) => {
 
     const [result] = await pool.query(
       `INSERT INTO Proveedores 
-       (Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo, Direccion)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [Primer_Nombre, Segundo_Nombre || null, Primer_Apellido, Segundo_Apellido || null, Contacto, Correo, Direccion || null]
+       (Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [Primer_Nombre, Segundo_Nombre || null, Primer_Apellido, Segundo_Apellido || null, Contacto, Correo]
     );
 
     res.status(201).json({ ID_Proveedor: result.insertId });
   } catch (error) {
     console.error("Error en registrarProveedor:", error);
-    res.status(500).json({ mensaje: "Error al crear proveedor", error: error.message });
+    res.status(500).json({ mensaje: "Error al crear proveedor" });
   }
 };
 
-// === ACTUALIZAR (PUT) ===
+// === ACTUALIZAR (SIN Dirección) ===
 export const actualizarProveedor = async (req, res) => {
   try {
     const { ID_Proveedor } = req.params;
@@ -59,8 +59,8 @@ export const actualizarProveedor = async (req, res) => {
 
     const [result] = await pool.query(
       `UPDATE Proveedores 
-       SET Primer_Nombre = ?, Segundo_Nombre = ?, Primer_Apellido = ?, Segundo_Apellido = ?, 
-           Contacto = ?, Correo = ?
+       SET Primer_Nombre = ?, Segundo_Nombre = ?, Primer_Apellido = ?, 
+           Segundo_Apellido = ?, Contacto = ?, Correo = ?
        WHERE ID_Proveedor = ?`,
       [Primer_Nombre, Segundo_Nombre || null, Primer_Apellido, Segundo_Apellido || null, Contacto, Correo, ID_Proveedor]
     );
@@ -72,11 +72,11 @@ export const actualizarProveedor = async (req, res) => {
     res.json({ mensaje: "Proveedor actualizado" });
   } catch (error) {
     console.error("Error en actualizarProveedor:", error);
-    res.status(500).json({ mensaje: "Error al actualizar", error: error.message });
+    res.status(500).json({ mensaje: "Error al actualizar" });
   }
 };
 
-// === ELIMINAR PROVEEDOR (con verificación de compras) ===
+// === ELIMINAR (con verificación de compras) ===
 export const eliminarProveedor = async (req, res) => {
   try {
     const { ID_Proveedor } = req.params;
@@ -94,7 +94,7 @@ export const eliminarProveedor = async (req, res) => {
       });
     }
 
-    // 2. Si no hay compras, eliminar
+    // 2. Eliminar
     const [result] = await pool.query(
       "DELETE FROM Proveedores WHERE ID_Proveedor = ?",
       [ID_Proveedor]
@@ -104,13 +104,10 @@ export const eliminarProveedor = async (req, res) => {
       return res.status(404).json({ mensaje: "Proveedor no encontrado" });
     }
 
-    res.status(204).send(); // Eliminado correctamente
+    res.status(204).send();
 
   } catch (error) {
     console.error("Error en eliminarProveedor:", error);
-    res.status(500).json({
-      mensaje: "Error interno del servidor",
-      error: error.message,
-    });
+    res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
