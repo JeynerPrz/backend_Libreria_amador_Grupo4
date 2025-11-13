@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { pool } from "../../db_connection.js"; // ← AÑADIR ESTA LÍNEA
 import {
   obtenerCompras,
   obtenerCompra,
@@ -9,19 +10,31 @@ import {
 
 const router = Router();
 
-// Obtener todas las compras
+// === RUTAS EXISTENTES ===
 router.get("/compras", obtenerCompras);
-
-// Obtener una compra por ID
 router.get("/compras/:id_compra", obtenerCompra);
-
-// Registrar una nueva compra
 router.post("/compras", registrarCompra);
-
-// Eliminar una compra por ID
 router.delete("/compras/:id_compra", eliminarCompra);
-
-// Actualizar una compra por ID
 router.patch("/compras/:id_compra", actualizarCompra);
+
+// === NUEVA RUTA: Contar compras por proveedor ===
+router.get("/compras/proveedor/:ID_Proveedor", async (req, res) => {
+  try {
+    const { ID_Proveedor } = req.params;
+    
+    const [rows] = await pool.query(
+      "SELECT ID_Compra FROM Compras WHERE ID_Proveedor = ?",
+      [ID_Proveedor]
+    );
+
+    res.json(rows); // Devuelve [] si no hay compras
+  } catch (error) {
+    console.error("Error al verificar compras del proveedor:", error);
+    res.status(500).json({ 
+      mensaje: "Error al verificar compras asociadas",
+      error: error.message 
+    });
+  }
+});
 
 export default router;

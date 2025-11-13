@@ -1,109 +1,116 @@
 import { pool } from "../../db_connection.js";
 
-// Obtener todos los proveedores
+// === OBTENER TODOS ===
 export const obtenerProveedores = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM Proveedores");
-    res.json(result);
+    const [rows] = await pool.query("SELECT * FROM Proveedores ORDER BY ID_Proveedor");
+    res.json(rows);
   } catch (error) {
-    return res.status(500).json({
-      mensaje: "Ha ocurrido un error al leer los proveedores.",
-      error: error,
-    });
+    console.error("Error en obtenerProveedores:", error);
+    res.status(500).json({ mensaje: "Error al obtener proveedores" });
   }
 };
 
-// Obtener un proveedor por ID
+// === OBTENER UNO ===
 export const obtenerProveedor = async (req, res) => {
   try {
-    const ID_Proveedor = req.params.ID_Proveedor;
-    const [result] = await pool.query(
-      "SELECT * FROM Proveedores WHERE ID_Proveedor = ?",
-      [ID_Proveedor]
-    );
-
-    if (result.length <= 0) {
-      return res.status(404).json({
-        mensaje: `Error al leer los datos. ID ${ID_Proveedor} no encontrado.`,
-      });
-    }
-
-    res.json(result[0]);
+    const { ID_Proveedor } = req.params;
+    const [rows] = await pool.query("SELECT * FROM Proveedores WHERE ID_Proveedor = ?", [ID_Proveedor]);
+    if (rows.length === 0) return res.status(404).json({ mensaje: "Proveedor no encontrado" });
+    res.json(rows[0]);
   } catch (error) {
-    return res.status(500).json({
-      mensaje: "Ha ocurrido un error al leer los datos del proveedor.",
-      error: error,
-    });
+    console.error("Error en obtenerProveedor:", error);
+    res.status(500).json({ mensaje: "Error al obtener proveedor" });
   }
 };
 
-// Registrar un nuevo proveedor
+// === CREAR ===
 export const registrarProveedor = async (req, res) => {
   try {
-    const { Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo } = req.body;
+    const { Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo, Direccion } = req.body;
+
+    if (!Primer_Nombre || !Primer_Apellido || !Contacto || !Correo) {
+      return res.status(400).json({ mensaje: "Faltan campos obligatorios" });
+    }
 
     const [result] = await pool.query(
-      "INSERT INTO Proveedores (Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo) VALUES (?, ?, ?, ?, ?, ?)",
-      [Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo]
+      `INSERT INTO Proveedores 
+       (Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo, Direccion)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [Primer_Nombre, Segundo_Nombre || null, Primer_Apellido, Segundo_Apellido || null, Contacto, Correo, Direccion || null]
     );
 
     res.status(201).json({ ID_Proveedor: result.insertId });
   } catch (error) {
-    return res.status(500).json({
-      mensaje: "Ha ocurrido un error al registrar el proveedor.",
-      error: error,
-    });
+    console.error("Error en registrarProveedor:", error);
+    res.status(500).json({ mensaje: "Error al crear proveedor", error: error.message });
   }
 };
 
-// Eliminar un proveedor por ID
+// === ACTUALIZAR (PUT) ===
+export const actualizarProveedor = async (req, res) => {
+  try {
+    const { ID_Proveedor } = req.params;
+    const { Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido, Contacto, Correo } = req.body;
+
+    if (!Primer_Nombre || !Primer_Apellido || !Contacto || !Correo) {
+      return res.status(400).json({ mensaje: "Faltan campos obligatorios" });
+    }
+
+    const [result] = await pool.query(
+      `UPDATE Proveedores 
+       SET Primer_Nombre = ?, Segundo_Nombre = ?, Primer_Apellido = ?, Segundo_Apellido = ?, 
+           Contacto = ?, Correo = ?
+       WHERE ID_Proveedor = ?`,
+      [Primer_Nombre, Segundo_Nombre || null, Primer_Apellido, Segundo_Apellido || null, Contacto, Correo, ID_Proveedor]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensaje: "Proveedor no encontrado" });
+    }
+
+    res.json({ mensaje: "Proveedor actualizado" });
+  } catch (error) {
+    console.error("Error en actualizarProveedor:", error);
+    res.status(500).json({ mensaje: "Error al actualizar", error: error.message });
+  }
+};
+
+// === ELIMINAR PROVEEDOR (con verificación de compras) ===
 export const eliminarProveedor = async (req, res) => {
   try {
-    const ID_Proveedor = req.params.ID_Proveedor;
+    const { ID_Proveedor } = req.params;
+
+    // 1. Verificar si hay compras asociadas
+    const [compras] = await pool.query(
+      "SELECT 1 FROM Compras WHERE ID_Proveedor = ? LIMIT 1",
+      [ID_Proveedor]
+    );
+
+    if (compras.length > 0) {
+      return res.status(400).json({
+        mensaje: "No se puede eliminar: el proveedor tiene compras asociadas.",
+        tieneCompras: true,
+      });
+    }
+
+    // 2. Si no hay compras, eliminar
     const [result] = await pool.query(
       "DELETE FROM Proveedores WHERE ID_Proveedor = ?",
       [ID_Proveedor]
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({
-        mensaje: `Error al eliminar el proveedor. El ID ${ID_Proveedor} no fue encontrado.`,
-      });
+      return res.status(404).json({ mensaje: "Proveedor no encontrado" });
     }
 
-    res.status(204).send();
+    res.status(204).send(); // Eliminado correctamente
+
   } catch (error) {
-    return res.status(500).json({
-      mensaje: "Ha ocurrido un error al eliminar el proveedor.",
-      error: error,
-    });
-  }
-};
-
-// Actualizar proveedor por ID (PATCH)
-export const actualizarProveedorPatch = async (req, res) => {
-  try {
-    const { ID_Proveedor } = req.params;
-    const datos = req.body;
-
-    const [result] = await pool.query(
-      "UPDATE Proveedores SET ? WHERE ID_Proveedor = ?",
-      [datos, ID_Proveedor]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        mensaje: `Proveedor con ID ${ID_Proveedor} no encontrado.`,
-      });
-    }
-
-    res.status(200).json({
-      mensaje: `Proveedor con ID ${ID_Proveedor} actualizado.`,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      mensaje: "Error al actualizar el proveedor.",
-      error,
+    console.error("Error en eliminarProveedor:", error);
+    res.status(500).json({
+      mensaje: "Error interno del servidor",
+      error: error.message,
     });
   }
 };

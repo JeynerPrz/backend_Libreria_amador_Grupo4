@@ -3,26 +3,16 @@ import {
   obtenerProveedores,
   obtenerProveedor,
   registrarProveedor,
+  actualizarProveedor,
   eliminarProveedor,
-  actualizarProveedorPatch
 } from "../controllers/proveedores.controller.js";
 
 const router = Router();
 
-// Obtener todos los proveedores
 router.get("/proveedores", obtenerProveedores);
-
-// Obtener un proveedor por ID
-router.get("/proveedor/:ID_Proveedor", obtenerProveedor);
-
-// Registrar un nuevo proveedor
-router.post("/RegistrarProveedor", registrarProveedor);
-
-// Eliminar un proveedor por ID
-router.delete("/EliminarProveedor/:ID_Proveedor", eliminarProveedor);
-
-// Actualizar un proveedor por ID
-router.patch("/ActualizarProveedor/:ID_Proveedor", actualizarProveedorPatch);
+router.get("/proveedores/:ID_Proveedor", obtenerProveedor);
+router.post("/proveedores", registrarProveedor);
+router.put("/proveedores/:ID_Proveedor", actualizarProveedor);
+router.delete("/proveedores/:ID_Proveedor", eliminarProveedor);
 
 export default router;
-
