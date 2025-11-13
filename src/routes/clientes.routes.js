@@ -1,5 +1,5 @@
+// src/routes/clientes.routes.js
 import { Router } from 'express';
-
 import {
   obtenerClientes,
   obtenerCliente,
@@ -10,19 +10,11 @@ import {
 
 const router = Router();
 
-// Obtener todos los clientes
-router.get('/clientes', obtenerClientes);
-
-// Obtener un cliente por ID
-router.get('/cliente/:ID_Cliente', obtenerCliente);
-
-// Registrar un nuevo cliente
-router.post('/RegistrarCliente', registrarCliente);
-
-// Eliminar un cliente por ID
-router.delete('/EliminarCliente/:ID_Cliente', eliminarCliente);
-
-// Actualizar un cliente por ID
-router.patch('/ActualizarCliente/:ID_Cliente', actualizarClientePatch);
+// RUTAS QUE EL FRONTEND ESPERA
+router.get('/clientes', obtenerClientes);                    // OK
+router.get('/clientes/:ID_Cliente', obtenerCliente);         // NUEVA (para "Ver")
+router.post('/RegistrarCliente', registrarCliente);          // OK
+router.delete('/clientes/:ID_Cliente', eliminarCliente);     // CAMBIADA
+router.put('/clientes/:ID_Cliente', actualizarClientePatch); // CAMBIADA (usa PUT)
 
 export default router;
