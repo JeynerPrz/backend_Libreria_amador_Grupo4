@@ -1,11 +1,11 @@
 // src/controllers/clientes.controller.js
 import { pool } from '../../db_connection.js';
 
-// Obtener todos los clientes
+// Obtener todos los clientes (ordenados de MENOR a MAYOR ID)
 export const obtenerClientes = async (req, res) => {
   try {
-    const [result] = await pool.query("SELECT * FROM Clientes ORDER BY ID_Cliente DESC");
-    res.json(result);
+    const [result] = await pool.query("SELECT * FROM Clientes ORDER BY ID_Cliente ASC");
+    res.json(result); // ¡FALTABA ESTA LÍNEA!
   } catch (error) {
     console.error("Error en obtenerClientes:", error);
     return res.status(500).json({
@@ -100,41 +100,48 @@ export const eliminarCliente = async (req, res) => {
   }
 };
 
-// Actualizar cliente (AHORA USA PUT, NO PATCH)
+// ACTUALIZAR CLIENTE (SOLO LOS CAMPOS ENVIADOS)
 export const actualizarClientePatch = async (req, res) => {
   try {
     const { ID_Cliente } = req.params;
-    const {
-      Primer_Nombre,
-      Segundo_Nombre,
-      Primer_Apellido,
-      Segundo_Apellido,
-      Cedula,
-      Contacto,
-      Direccion
-    } = req.body;
+    const campos = req.body;
 
-    // Validar que al menos un campo venga
-    if (!Primer_Nombre && !Primer_Apellido && !Cedula) {
+    // Campos permitidos
+    const camposPermitidos = [
+      'Primer_Nombre',
+      'Segundo_Nombre',
+      'Primer_Apellido',
+      'Segundo_Apellido',
+      'Cedula',
+      'Contacto',
+      'Direccion'
+    ];
+
+    // Filtrar solo los campos que vienen y no son vacíos
+    const camposActualizados = {};
+    for (const campo of camposPermitidos) {
+      if (campos[campo] !== undefined && campos[campo] !== null && campos[campo] !== '') {
+        camposActualizados[campo] = campos[campo];
+      }
+    }
+
+    if (Object.keys(camposActualizados).length === 0) {
       return res.status(400).json({
-        mensaje: "Debe enviar al menos un campo para actualizar."
+        mensaje: "Debe enviar al menos un campo válido para actualizar."
       });
     }
 
+    // Construir SET dinámico
+    const setClause = Object.keys(camposActualizados)
+      .map(campo => `${campo} = ?`)
+      .join(', ');
+
+    const valores = Object.values(camposActualizados);
+    valores.push(ID_Cliente);
+
     const [result] = await pool.query(
-      `UPDATE Clientes SET 
-        Primer_Nombre = COALESCE(?, Primer_Nombre),
-        Segundo_Nombre = COALESCE(?, Segundo_Nombre),
-        Primer_Apellido = COALESCE(?, Primer_Apellido),
-        Segundo_Apellido = COALESCE(?, Segundo_Apellido),
-        Cedula = COALESCE(?, Cedula),
-        Contacto = COALESCE(?, Contacto),
-        Direccion = COALESCE(?, Direccion)
-       WHERE ID_Cliente = ?`,
-      [
-        Primer_Nombre, Segundo_Nombre, Primer_Apellido, Segundo_Apellido,
-        Cedula, Contacto, Direccion, ID_Cliente
-      ]
+      `UPDATE Clientes SET ${setClause} WHERE ID_Cliente = ?`,
+      valores
     );
 
     if (result.affectedRows === 0) {
