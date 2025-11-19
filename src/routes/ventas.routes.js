@@ -1,21 +1,20 @@
 import { Router } from 'express';
-import { obtenerVentas,obtenerVenta,registrarVenta,eliminarVenta,actualizarVentaPatch } from '../controllers/ventas.controller.js';
-import { pool } from '../../db/db_connection.js';
+import { obtenerVentas, obtenerVenta, registrarVenta, eliminarVenta, actualizarVentaPatch } from '../controllers/ventas.controller.js';
 
 const router = Router();
 
 // Ruta para obtener todas las ventas
-router.get('/Ventas', obtenerVentas);
+router.get('/ventas', obtenerVentas);
 
-// Obtener una categoría por ID
-router.get('/venta/:id_venta', obtenerVenta);
+// Obtener una venta por ID
+router.get('/ventas/:id_venta', obtenerVenta);
 
-router.post('/registrarVenta', registrarVenta);
+router.post('/ventas', registrarVenta);
 
-// Eliminar una categoría por ID
-router.delete('/eliminarVenta/:id_venta', eliminarVenta);
+// Eliminar una venta por ID
+router.delete('/ventas/:id_venta', eliminarVenta);
 
-// Actualizar parcialmente una categoría por su ID
-router.patch('/actualizarVenta/:id_venta', actualizarVentaPatch);
+// Actualizar parcialmente una venta por su ID
+router.patch('/ventas/:id_venta', actualizarVentaPatch);
 
 export default router;

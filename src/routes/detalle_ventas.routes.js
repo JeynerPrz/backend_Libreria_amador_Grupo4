@@ -1,22 +1,27 @@
 import { Router } from 'express';
-import {obtenerDetalles_Ventas,obtenerDetalles_Venta, registrarDetallesVentas,eliminarDetalleVenta,actualizarDetallesVentaPatch} from '../controllers/detalle_ventas.controller.js';
-import { pool } from '../../db/db_connection.js';
+import {
+  obtenerDetalles_Ventas,
+  obtenerDetalles_Venta,
+  registrarDetallesVentas,
+  eliminarDetalleVenta,
+  actualizarDetallesVentaPatch
+} from '../controllers/detalle_ventas.controller.js';
 
 const router = Router();
 
-// Obtener todas las categorías
-router.get('/detallesventas', obtenerDetalles_Ventas);
+// Obtener todos los detalles de ventas
+router.get('/detalle-ventas', obtenerDetalles_Ventas);
 
-// Obtener una categoría por ID
-router.get('/detallesventa/:ID_Detalle_Ven', obtenerDetalles_Venta);
+// Obtener un detalle de venta por ID
+router.get('/detalle-ventas/:id_detalle', obtenerDetalles_Venta);
 
-// Registrar una nueva categoría
-router.post('/RegistrarDetallesVentas', registrarDetallesVentas);
+// Registrar un nuevo detalle de venta
+router.post('/detalle-ventas', registrarDetallesVentas);
 
-// Eliminar una categoría por ID
-router.delete('/EliminarDetalleVenta/:ID_Detalle_Vent', eliminarDetalleVenta);
+// Eliminar un detalle de venta por ID
+router.delete('/detalle-ventas/:id_detalle', eliminarDetalleVenta);
 
-// Actualizar una categoría por ID
-router.patch('/ActualizarDetallesVenta/:ID_Detalle_Vent', actualizarDetallesVentaPatch);
+// Actualizar un detalle de venta por ID
+router.patch('/detalle-ventas/:id_detalle', actualizarDetallesVentaPatch);
 
 export default router;
