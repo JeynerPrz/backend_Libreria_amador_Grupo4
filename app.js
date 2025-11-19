@@ -22,7 +22,7 @@ app.use("/api/clientes", clientesRoutes);
 app.use("/api/compras", comprasRoutes);
 app.use("/api/detalle_compras", detalleComprasRoutes);
 app.use("/api/detalle_ventas", detalleVentasRoutes);
-app.use("/api/productos", productosRoutes);
+app.use("/api", productosRoutes);
 app.use("/api/proveedores", proveedoresRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/ventas", ventasRoutes);

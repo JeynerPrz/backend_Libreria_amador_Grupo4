@@ -1,23 +1,28 @@
 import { Router } from 'express';
-import { pool } from '../../db/db_connection.js';
 
-import {obtenerProductos,obtenerProducto,registrarProductos,eliminarProducto,actualizarProductoPatch} from '../controllers/productos.controller.js';
+import {
+  obtenerProductos,
+  obtenerProducto,
+  registrarProductos,
+  eliminarProducto,
+  actualizarProductoPatch
+} from '../controllers/productos.controller.js';
 
 const router = Router();
 
-// Obtener todas las categorías
+// Obtener todos los productos
 router.get('/productos', obtenerProductos);
 
-// Obtener una categoría por ID
-router.get('/producto/:ID_Producto', obtenerProducto);
+// Obtener un producto por ID
+router.get('/productos/:ID_Producto', obtenerProducto);
 
-// Registrar una nueva categoría
-router.post('/RegistrarProductos', registrarProductos);
+// Crear un producto
+router.post('/productos', registrarProductos);
 
-// Eliminar una categoría por ID
-router.delete('/EliminarProducto/:ID_Producto', eliminarProducto);
+// Actualizar un producto
+router.patch('/productos/:ID_Producto', actualizarProductoPatch);
 
-// Actualizar una categoría por ID
-router.patch('/ActualizarProducto/:ID_Producto', actualizarProductoPatch);
+// Eliminar un producto
+router.delete('/productos/:ID_Producto', eliminarProducto);
 
 export default router;
