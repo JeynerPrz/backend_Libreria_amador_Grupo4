@@ -1,6 +1,4 @@
 // src/routes/clientes.routes.js
-import { pool } from '../../db/db_connection.js';
-
 import { Router } from 'express';
 import {
   obtenerClientes,
@@ -12,11 +10,12 @@ import {
 
 const router = Router();
 
-// RUTAS QUE EL FRONTEND ESPERA
-router.get('/clientes', obtenerClientes);                    // OK
-router.get('/clientes/:ID_Cliente', obtenerCliente);         // NUEVA (para "Ver")
-router.post('/RegistrarCliente', registrarCliente);          // OK
-router.delete('/clientes/:ID_Cliente', eliminarCliente);     // CAMBIADA
-router.put('/clientes/:ID_Cliente', actualizarClientePatch); // CAMBIADA (usa PUT)
+// ✔ Rutas correctas alineadas con el frontend
+router.get('/', obtenerClientes);
+router.get('/:ID_Cliente', obtenerCliente);
+router.post('/', registrarCliente);
+router.delete('/:ID_Cliente', eliminarCliente);
+router.put('/:ID_Cliente', actualizarClientePatch); 
+// si quieres usar PATCH, solo cámbialo por router.patch
 
 export default router;
