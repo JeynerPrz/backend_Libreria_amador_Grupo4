@@ -1,4 +1,5 @@
-import { pool } from '../../db_connection.js';
+import { pool } from '../../db/db_connection.js';
+
 // Obtener todas las categorías
 export const obtenerDetalles_Ventas = async (req, res) => {
   try {

@@ -1,4 +1,5 @@
-import { pool } from '../../db_connection.js';
+import { pool } from '../../db/db_connection.js';
+
 
 export const obtenerProductos = async (req, res) => {
   try {

@@ -1,4 +1,6 @@
-import { pool } from "../../db_connection.js";
+import { pool } from '../../db/db_connection.js';
+
+
 
 // === OBTENER TODOS ===
 export const obtenerProveedores = async (req, res) => {

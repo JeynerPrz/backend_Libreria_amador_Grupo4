@@ -1,4 +1,6 @@
 // src/routes/clientes.routes.js
+import { pool } from '../../db/db_connection.js';
+
 import { Router } from 'express';
 import {
   obtenerClientes,

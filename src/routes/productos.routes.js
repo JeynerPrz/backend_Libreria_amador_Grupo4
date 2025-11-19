@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { pool } from '../../db/db_connection.js';
 
 import {obtenerProductos,obtenerProducto,registrarProductos,eliminarProducto,actualizarProductoPatch} from '../controllers/productos.controller.js';
 

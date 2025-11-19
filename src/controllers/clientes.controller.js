@@ -1,5 +1,6 @@
 // src/controllers/clientes.controller.js
-import { pool } from '../../db_connection.js';
+import { pool } from '../../db/db_connection.js';
+
 
 // Obtener todos los clientes (ordenados de MENOR a MAYOR ID)
 export const obtenerClientes = async (req, res) => {

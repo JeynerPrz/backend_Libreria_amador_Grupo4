@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { obtenerVentas,obtenerVenta,registrarVenta,eliminarVenta,actualizarVentaPatch } from '../controllers/ventas.controller.js';
+import { pool } from '../../db/db_connection.js';
 
 const router = Router();
 

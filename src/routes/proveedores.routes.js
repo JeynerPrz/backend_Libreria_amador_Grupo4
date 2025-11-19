@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { pool } from '../../db/db_connection.js';
+
 import {
   obtenerProveedores,
   obtenerProveedor,

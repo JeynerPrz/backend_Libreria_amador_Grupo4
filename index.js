@@ -1,8 +1,7 @@
+import app from "./app.js";
 
-
-import app from './app.js';
-import { PORT } from './config.js';
+const PORT = 3000;
 
 app.listen(PORT, () => {
-  console.log("Servidor ejecutándose en el puerto", PORT);
+  console.log(`Servidor backend corriendo en http://localhost:${PORT}`);
 });
