@@ -14,15 +14,15 @@ const router = Router();
 router.get('/productos', obtenerProductos);
 
 // Obtener un producto por ID
-router.get('/productos/:ID_Producto', obtenerProducto);
+router.get('/producto/:ID_Producto', obtenerProducto);
 
 // Crear un producto
-router.post('/productos', registrarProductos);
+router.post('/registrarproducto', registrarProductos);
 
 // Actualizar un producto
-router.patch('/productos/:ID_Producto', actualizarProductoPatch);
+router.patch('/actualizarproducto/:ID_Producto', actualizarProductoPatch);
 
 // Eliminar un producto
-router.delete('/productos/:ID_Producto', eliminarProducto);
+router.delete('/eliminarproducto/:ID_Producto', eliminarProducto);
 
 export default router;
