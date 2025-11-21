@@ -1,6 +1,6 @@
 import { pool } from "../../db/db_connection.js";
 
-/* OBTENER TODAS LAS COMPRAS */
+// Obtener todas las compras
 export const obtenerCompras = async (req, res) => {
   try {
     const [result] = await pool.query(`
@@ -19,19 +19,18 @@ export const obtenerCompras = async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error("ERROR obtenerCompras:", error);
-    res.status(500).json({ mensaje: "Error al obtener las compras" });
+    console.error("ERROR obtenerCompras:", error.message);
+    res.status(500).json({ mensaje: "Error al obtener las compras", error: error.message });
   }
 };
 
-/* OBTENER UNA COMPRA POR ID */
+// Obtener una compra por ID
 export const obtenerCompra = async (req, res) => {
   try {
-    const { id_compra } = req.params;
-
+    const { id } = req.params;
     const [result] = await pool.query(
       `SELECT * FROM Compras WHERE ID_Compra = ?`,
-      [id_compra]
+      [id]
     );
 
     if (result.length === 0)
@@ -39,50 +38,45 @@ export const obtenerCompra = async (req, res) => {
 
     res.json(result[0]);
   } catch (error) {
-    console.error("ERROR obtenerCompra:", error);
-    res.status(500).json({ mensaje: "Error al obtener la compra" });
+    console.error("ERROR obtenerCompra:", error.message);
+    res.status(500).json({ mensaje: "Error al obtener la compra", error: error.message });
   }
 };
 
-/* 🔥 OBTENER DETALLES DE COMPRA — TABLA REAL: Detalle_Compras */
+// Obtener detalles de una compra
 export const obtenerDetallesCompra = async (req, res) => {
   try {
-    const { id_compra } = req.params;
-
+    const { id } = req.params;
     const [result] = await pool.query(
-      `
-      SELECT 
-        dc.ID_Detalle_Com AS ID_Detalle,
-        dc.ID_Compra,
-        dc.ID_Producto,
-        p.Nombre_Producto,
-        dc.Cantidad_Com AS Cantidad,
-        dc.Precio_Com AS Precio_Compra,
-        (dc.Cantidad_Com * dc.Precio_Com) AS Subtotal
-      FROM Detalle_Compras dc
-      INNER JOIN Productos p ON dc.ID_Producto = p.ID_Producto
-      WHERE dc.ID_Compra = ?
-      `,
-      [id_compra]
+      `SELECT 
+         dc.ID_Detalle_Com AS ID_Detalle,
+         dc.ID_Compra,
+         dc.ID_Producto,
+         p.Nombre AS Nombre_Producto,
+         dc.Cantidad_Com AS Cantidad,
+         dc.Precio_Com AS Precio_Compra,
+         (dc.Cantidad_Com * dc.Precio_Com) AS Subtotal
+       FROM Detalle_Compras dc
+       INNER JOIN Productos p ON dc.ID_Producto = p.ID_Producto
+       WHERE dc.ID_Compra = ?
+       ORDER BY dc.ID_Detalle_Com ASC`,
+      [id]
     );
 
     res.json(result);
   } catch (error) {
-    console.error("ERROR obtenerDetallesCompra:", error);
-    res.status(500).json({ mensaje: "Error al obtener los detalles de la compra" });
+    console.error("ERROR obtenerDetallesCompra:", error.message);
+    res.status(500).json({ mensaje: "Error al obtener los detalles de la compra", error: error.message });
   }
 };
 
-/* REGISTRAR NUEVA COMPRA */
+// Registrar nueva compra
 export const registrarCompra = async (req, res) => {
   try {
-    const { ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra } = req.body;
-
+    const { ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra = null } = req.body;
     const [result] = await pool.query(
-      `
-      INSERT INTO Compras (ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra)
-      VALUES (?, ?, ?, ?)
-      `,
+      `INSERT INTO Compras (ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra)
+       VALUES (?, ?, ?, ?)`,
       [ID_Proveedor, ID_Empleado, Fecha_Compra, Total_Compra]
     );
 
@@ -91,40 +85,19 @@ export const registrarCompra = async (req, res) => {
       id_compra: result.insertId,
     });
   } catch (error) {
-    console.error("ERROR registrarCompra:", error);
-    res.status(500).json({ mensaje: "Error al registrar la compra" });
+    console.error("ERROR registrarCompra:", error.message);
+    res.status(500).json({ mensaje: "Error al registrar la compra", error: error.message });
   }
 };
 
-/* ELIMINAR COMPRA */
-export const eliminarCompra = async (req, res) => {
-  try {
-    const { id_compra } = req.params;
-
-    const [result] = await pool.query(
-      "DELETE FROM Compras WHERE ID_Compra = ?",
-      [id_compra]
-    );
-
-    if (result.affectedRows === 0)
-      return res.status(404).json({ mensaje: "Compra no encontrada" });
-
-    res.json({ mensaje: "Compra eliminada correctamente" });
-  } catch (error) {
-    console.error("ERROR eliminarCompra:", error);
-    res.status(500).json({ mensaje: "Error al eliminar la compra" });
-  }
-};
-
-/* ACTUALIZAR COMPRA */
+// Actualizar compra
 export const actualizarCompra = async (req, res) => {
   try {
-    const { id_compra } = req.params;
+    const { id } = req.params;
     const datos = req.body;
-
     const [result] = await pool.query(
       "UPDATE Compras SET ? WHERE ID_Compra = ?",
-      [datos, id_compra]
+      [datos, id]
     );
 
     if (result.affectedRows === 0)
@@ -132,7 +105,26 @@ export const actualizarCompra = async (req, res) => {
 
     res.json({ mensaje: "Compra actualizada correctamente" });
   } catch (error) {
-    console.error("ERROR actualizarCompra:", error);
-    res.status(500).json({ mensaje: "Error al actualizar la compra" });
+    console.error("ERROR actualizarCompra:", error.message);
+    res.status(500).json({ mensaje: "Error al actualizar la compra", error: error.message });
+  }
+};
+
+// Eliminar compra
+export const eliminarCompra = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [result] = await pool.query(
+      "DELETE FROM Compras WHERE ID_Compra = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0)
+      return res.status(404).json({ mensaje: "Compra no encontrada" });
+
+    res.json({ mensaje: "Compra eliminada correctamente" });
+  } catch (error) {
+    console.error("ERROR eliminarCompra:", error.message);
+    res.status(500).json({ mensaje: "Error al eliminar la compra", error: error.message });
   }
 };
